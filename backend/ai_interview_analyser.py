@@ -18,14 +18,18 @@ from nltk.tokenize import word_tokenize,sent_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import nltk
-nltk.download('all')
 nltk.download('stopwords')
 from sentence_transformers import (SentenceTransformer)
 stop_words = set(stopwords.words('english'))
-try:
-    nltk.data.find("tokenizers/punkt")
-except LookupError:
-    nltk.download("punkt")
+required = [
+    "punkt",
+    "stopwords",
+    "wordnet",
+    "omw-1.4"
+]
+
+for package in required:
+    nltk.download(package, quiet=True)
 
 
 
