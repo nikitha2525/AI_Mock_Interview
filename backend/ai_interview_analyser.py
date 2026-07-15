@@ -22,7 +22,10 @@ nltk.download('all')
 nltk.download('stopwords')
 from sentence_transformers import (SentenceTransformer)
 stop_words = set(stopwords.words('english'))
-
+try:
+    nltk.data.find("tokenizers/punkt")
+except LookupError:
+    nltk.download("punkt")
 
 
 
