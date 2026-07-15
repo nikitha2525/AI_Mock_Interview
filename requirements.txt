@@ -3,12 +3,8 @@ gunicorn
 numpy
 pandas
 scikit-learn
-torch
 transformers
 sentence-transformers
-accelerate
-safetensors
-huggingface-hub
 tokenizers
 requests
 kagglehub
