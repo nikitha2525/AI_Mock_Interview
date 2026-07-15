@@ -1,4 +1,4 @@
-
+from backend.ai_interview_analyser import *
 from sys import getsizeof
 from flask_session import Session
 import os
