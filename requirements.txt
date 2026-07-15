@@ -12,3 +12,4 @@ huggingface-hub
 tokenizers
 requests
 kagglehub
+nltk
