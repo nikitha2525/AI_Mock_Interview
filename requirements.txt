@@ -1,2 +1,15 @@
-Flask==3.1.1
+Flask==3.1.2
 gunicorn==23.0.0
+numpy==2.3.2
+pandas==2.3.1
+scikit-learn==1.7.1
+torch==2.8.0
+transformers==4.56.0
+sentence-transformers==5.1.0
+accelerate==1.10.1
+safetensors==0.6.2
+huggingface-hub==0.34.4
+tokenizers==0.22.0
+requests==2.32.4
+Jinja2==3.1.6
+Werkzeug==3.1.3
