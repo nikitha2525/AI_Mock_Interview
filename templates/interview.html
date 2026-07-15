@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Interview – InterviewAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0f0f13;--surface:#18181f;--surface2:#21212b;--border:rgba(255,255,255,0.08);--accent:#7c6ff7;--accent-light:#a99ff9;--accent-glow:rgba(124,111,247,0.18);--text:#f0eff8;--text-muted:#8b8a9b;--text-faint:#56555f;--radius:14px;--radius-sm:8px}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:56px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;flex-shrink:0}
+  .topbar-left{display:flex;align-items:center;gap:14px}
+  .category-badge{font-size:12px;font-weight:500;padding:4px 10px;border-radius:99px;background:rgba(124,111,247,0.15);color:var(--accent-light)}
+  .q-counter{font-size:13px;color:var(--text-muted)}
+  .timer{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text-muted);background:var(--surface2);padding:5px 12px;border-radius:99px;border:1px solid var(--border)}
+  .timer-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+  .progress-track{height:3px;background:var(--surface2)}
+  .progress-fill{height:100%;background:var(--accent);transition:width 0.4s ease}
+  main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:2.5rem 1.5rem}
+  .interview-wrap{width:100%;max-width:680px}
+  .q-dots{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem}
+  .dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;border:1px solid var(--border);color:var(--text-faint);background:var(--surface)}
+  .dot.answered{background:rgba(124,111,247,0.15);border-color:var(--accent);color:var(--accent-light)}
+  .dot.current{background:var(--accent);border-color:var(--accent);color:#fff}
+  .q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:1rem}
+  .q-number{font-size:11px;font-weight:500;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-faint);margin-bottom:1rem}
+  .q-text{font-size:19px;font-weight:500;line-height:1.55;letter-spacing:-0.3px;color:var(--text)}
+  .hint-toggle{display:inline-flex;align-items:center;gap:6px;margin-top:1.25rem;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;font-size:12px;color:var(--text-muted);cursor:pointer;font-family:'Inter',sans-serif;transition:border-color 0.15s,color 0.15s}
+  .hint-toggle:hover{color:var(--text)}
+  .hint-box{margin-top:1rem;padding:12px 14px;background:rgba(124,111,247,0.08);border:1px solid rgba(124,111,247,0.2);border-radius:var(--radius-sm);font-size:13px;color:var(--accent-light);line-height:1.6;display:none}
+  .hint-box.visible{display:block}
+  .answer-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem}
+  .answer-label{font-size:12px;font-weight:500;letter-spacing:0.3px;text-transform:uppercase;color:var(--text-faint);margin-bottom:10px}
+  textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;line-height:1.65;resize:vertical;min-height:160px;outline:none;transition:border-color 0.2s}
+  textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+  textarea::placeholder{color:var(--text-faint)}
+  .char-count{text-align:right;font-size:11px;color:var(--text-faint);margin-top:6px}
+  .char-count.warn{color:#fbbf24}
+  .action-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .btn-skip{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 18px;font-size:13px;color:var(--text-muted);font-family:'Inter',sans-serif;cursor:pointer;transition:border-color 0.15s,color 0.15s}
+  .btn-skip:hover{border-color:rgba(255,255,255,0.16);color:var(--text)}
+  .btn-group{display:flex;gap:10px}
+  .btn-next{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 20px;font-size:13px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;transition:background 0.15s}
+  .btn-next:hover{background:rgba(255,255,255,0.08)}
+  .btn-submit{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:10px 22px;font-size:13px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;transition:background 0.2s}
+  .btn-submit:hover{background:#6a5ef0}
+</style>
+</head>
+<body>
+
+{# ── All questions passed from Flask as a list ── #}
+{% set current_q = questions[current_index] %}
+{% set is_last   = (current_index == total - 1) %}
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="category-badge">{{ category_label }}</span>
+    <span class="q-counter">Question <strong>{{ current_index + 1 }}</strong> of <strong>{{ total }}</strong></span>
+  </div>
+  <div class="timer">
+    <span class="timer-dot"></span>
+    <span id="timerDisplay">00:00</span>
+  </div>
+</div>
+
+<div class="progress-track">
+  <div class="progress-fill" style="width: {{ progress }}%"></div>
+</div>
+
+<main>
+  <div class="interview-wrap">
+
+    {# Question dot navigation #}
+    <div class="q-dots">
+      {% for i in range(total) %}
+        <div class="dot {% if i == current_index %}current{% endif %}">{{ i + 1 }}</div>
+      {% endfor %}
+    </div>
+
+    {# Question card #}
+    <div class="q-card">
+      <p class="q-number">Question {{ current_index + 1 }}</p>
+      <p class="q-text">{{ current_q.question_text }}</p>
+
+      {% if current_q.key %}
+        <button class="hint-toggle" onclick="toggleHint()">💡 Show hint</button>
+        <div class="hint-box" id="hintBox">{{ current_q.key }}</div>
+      {% endif %}
+    </div>
+
+    {# Answer form — posts to /interview/answer #}
+    <form action="/interview/answer" method="POST">
+      {# Hidden fields: question id and which action (next vs submit) #}
+      <input type="hidden" name="question_id" value="{{ current_q.selection_id }}"/>
+      <input type="hidden" name="action"      value="next"  id="actionField"/>
+
+      <div class="answer-card">
+        <p class="answer-label">Your answer</p>
+        <textarea
+          name="answer"
+          id="answerText"
+          placeholder="Type your answer here. Be specific and use real examples..."
+          oninput="updateCount(this)"
+        ></textarea>
+        <p class="char-count" id="charCount">0 / 1000 characters</p>
+      </div>
+
+      <div class="action-bar">
+
+        {# Skip button — separate tiny form so it doesn't conflict #}
+        <form action="/interview/skip" method="POST" style="margin:0">
+          <button type="submit" class="btn-skip">Skip question</button>
+        </form>
+
+        <div class="btn-group">
+          {% if not is_last %}
+            {# Next → just submits with action=next #}
+            <button type="submit" class="btn-next"
+                    onclick="document.getElementById('actionField').value='next'">
+              Next →
+            </button>
+          {% endif %}
+
+          {# Submit interview — always visible on last question, hidden on others #}
+          <button type="submit" class="btn-submit"
+                  onclick="document.getElementById('actionField').value='submit'"
+                  {% if not is_last %}style="display:none" id="submitBtn"{% endif %}>
+            Submit interview ✓
+          </button>
+        </div>
+
+      </div>
+    </form>
+
+  </div>
+</main>
+
+<script>
+  function toggleHint(){
+    const h = document.getElementById('hintBox');
+    if(h) h.classList.toggle('visible');
+  }
+  function updateCount(el){
+    const len = el.value.length;
+    const el2 = document.getElementById('charCount');
+    el2.textContent = len + ' / 1000 characters';
+    el2.className = 'char-count' + (len > 900 ? ' warn' : '');
+  }
+  // Timer
+  let sec = 0;
+  setInterval(()=>{
+    sec++;
+    const m = String(Math.floor(sec/60)).padStart(2,'0');
+    const s = String(sec%60).padStart(2,'0');
+    document.getElementById('timerDisplay').textContent = m+':'+s;
+  }, 1000);
+</script>
+
+</body>
+</html>

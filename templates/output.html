@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Result – InterviewAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0f0f13;--surface:#18181f;--surface2:#21212b;--border:rgba(255,255,255,0.08);--accent:#7c6ff7;--accent-light:#a99ff9;--text:#f0eff8;--text-muted:#8b8a9b;--text-faint:#56555f;--success:#4ade80;--danger:#f87171;--warn:#fbbf24;--radius:14px;--radius-sm:8px}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:56px;border-bottom:1px solid var(--border);background:var(--surface)}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .brand-icon{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .brand-icon svg{width:16px;height:16px;fill:#fff}
+  .brand-name{font-size:15px;font-weight:600;color:var(--text)}
+  .nav-right{display:flex;gap:10px}
+  .btn-outline{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 14px;font-size:13px;color:var(--text-muted);font-family:'Inter',sans-serif;cursor:pointer;text-decoration:none;display:inline-block;transition:border-color 0.15s,color 0.15s}
+  .btn-outline:hover{border-color:rgba(255,255,255,0.16);color:var(--text)}
+  .btn-accent{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:7px 16px;font-size:13px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;text-decoration:none;display:inline-block;transition:background 0.2s}
+  .btn-accent:hover{background:#6a5ef0}
+  main{max-width:720px;margin:0 auto;padding:2.5rem 1.5rem}
+  .score-hero{text-align:center;padding:2.5rem 2rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1.5rem;position:relative;overflow:hidden}
+  .score-hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:300px;height:200px;background:radial-gradient(ellipse,rgba(124,111,247,0.15) 0%,transparent 70%);pointer-events:none}
+  .score-ring{width:120px;height:120px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1.25rem;position:relative}
+  .score-ring svg{position:absolute;top:0;left:0;width:120px;height:120px;transform:rotate(-90deg)}
+  .score-ring circle{fill:none;stroke-width:6;stroke-linecap:round}
+  .ring-bg{stroke:var(--surface2)}
+  .ring-fill{stroke:var(--accent);transition:stroke-dashoffset 1.2s ease}
+  .score-num{font-size:30px;font-weight:600;color:var(--text);z-index:1;position:relative}
+  .score-unit{font-size:13px;color:var(--text-muted);position:relative;z-index:1}
+  .score-label{font-size:22px;font-weight:600;letter-spacing:-0.4px;margin-bottom:4px}
+  .score-sub{font-size:13px;color:var(--text-muted)}
+  .grade-badge{display:inline-block;font-size:12px;font-weight:500;padding:4px 12px;border-radius:99px;margin-top:12px}
+  .grade-good{background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.25)}
+  .grade-mid{background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.25)}
+  .grade-low{background:rgba(248,113,113,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.25)}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem}
+  @media(max-width:520px){.two-col{grid-template-columns:1fr}}
+  .result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem}
+  .result-card h2{font-size:13px;font-weight:500;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+  .result-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-muted)}
+  .result-item:last-child{border:none}
+  .result-icon{flex-shrink:0;font-size:14px;margin-top:1px}
+  .breakdown-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem}
+  .breakdown-card h2{font-size:14px;font-weight:500;margin-bottom:1.25rem}
+  .q-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+  .q-row:last-child{border:none}
+  .q-num-badge{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:500;color:var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .q-row-text{flex:1;font-size:13px;color:var(--text-muted)}
+  .q-score-bar{width:80px;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
+  .q-score-fill{height:100%;border-radius:3px}
+  .q-score-val{font-size:12px;font-weight:500;min-width:38px;text-align:right}
+  .ideal-toggle{font-size:11px;color:var(--accent-light);cursor:pointer;margin-top:4px;display:block;background:none;border:none;font-family:'Inter',sans-serif;padding:0}
+  .ideal-box{font-size:12px;color:var(--text-faint);margin-top:6px;padding:8px 10px;background:var(--surface2);border-radius:var(--radius-sm);display:none;line-height:1.6}
+  .ideal-box.open{display:block}
+  .action-row{display:flex;gap:12px;flex-wrap:wrap}
+  .action-row a{flex:1;min-width:160px;text-align:center;padding:11px}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/dashboard" class="brand">
+    <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
+    <span class="brand-name">InterviewAI</span>
+  </a>
+  <div class="nav-right">
+    <a href="/dashboard"  class="btn-outline">Dashboard</a>
+    <a href="/categories" class="btn-accent">Practice again</a>
+  </div>
+</nav>
+
+<main>
+
+  {# ── Score hero ── #}
+  <div class="score-hero">
+    {% set dash_total = 339 %}
+    {% set dash_offset = (dash_total * (1 - score / 100)) | round | int %}
+    <div class="score-ring">
+      <svg viewBox="0 0 120 120">
+        <circle class="ring-bg"   cx="60" cy="60" r="54"/>
+        <circle class="ring-fill" cx="60" cy="60" r="54"
+                stroke-dasharray="{{ dash_total }}"
+                stroke-dashoffset="{{ dash_offset }}"
+                id="ringFill"/>
+      </svg>
+      <span class="score-num">{{ score }}%</span>
+      <span class="score-unit">score</span>
+    </div>
+    <p class="score-label">{{ grade }}</p>
+    <p class="score-sub">{{ category_label }} · {{ total_questions }} questions answered</p>
+    <span class="grade-badge {{ grade_class }}">
+      {% if score >= 80 %}Above average
+      {% elif score >= 60 %}Average
+      {% else %}Keep practising
+      {% endif %}
+    </span>
+  </div>
+
+  {# ── Strengths & Weak areas ── #}
+  <div class="two-col">
+    <div class="result-card">
+      <h2 style="color:var(--success)">✔ Strengths</h2>
+      {% if strengths %}
+        {% for a in strengths %}
+          <div class="result-item">
+            <span class="result-icon" style="color:var(--success)">✔</span>
+            <span>{{ a.question_text[:60] }}{% if a.question_text|length > 60 %}…{% endif %} <em style="color:var(--success)">({{ a.score }}%)</em></span>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="result-item" style="color:var(--text-faint)">Keep practising — strengths will show here.</div>
+      {% endif %}
+    </div>
+    <div class="result-card">
+      <h2 style="color:var(--danger)">✘ Needs work</h2>
+      {% if weak_areas %}
+        {% for a in weak_areas %}
+          <div class="result-item">
+            <span class="result-icon" style="color:var(--danger)">✘</span>
+            <span>{{ a.question_text[:60] }}{% if a.question_text|length > 60 %}…{% endif %} <em style="color:var(--danger)">({{ a.score }}%)</em></span>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="result-item" style="color:var(--text-faint)">Great — no weak areas this session!</div>
+      {% endif %}
+    </div>
+  </div>
+
+  {# ── Per-question breakdown ── #}
+  <div class="breakdown-card">
+    <h2>Question-by-question breakdown</h2>
+    {% for a in answers %}
+      {% set sc = a.score | float %}
+      {% if sc >= 80 %}{% set bc = '#4ade80' %}
+      {% elif sc >= 60 %}{% set bc = '#7c6ff7' %}
+      {% elif sc >= 40 %}{% set bc = '#fbbf24' %}
+      {% else %}{% set bc = '#f87171' %}
+      {% endif %}
+      <div class="q-row">
+        <div class="q-num-badge">{{ loop.index }}</div>
+        <div style="flex:1">
+          <div class="q-row-text">{{ a.question_text }}</div>
+          {% if a.user_answer %}
+            <div style="font-size:11px;color:var(--text-faint);margin-top:3px">
+              Your answer: {{ a.user_answer[:80] }}{% if a.user_answer|length > 80 %}…{% endif %}
+            </div>
+          {% else %}
+            <div style="font-size:11px;color:var(--text-faint);margin-top:3px">Skipped</div>
+          {% endif %}
+          {% if a.ideal_answer %}
+            <button class="ideal-toggle" onclick="toggleIdeal({{ loop.index }})">💡 View ideal answer</button>
+            <div class="ideal-box" id="ideal-{{ loop.index }}">{{ a.ideal_answer }}</div>
+          {% endif %}
+        </div>
+        <div class="q-score-bar">
+          <div class="q-score-fill" style="width:{{ sc }}%;background:{{ bc }}"></div>
+        </div>
+        <span class="q-score-val" style="color:{{ bc }}">{{ sc }}%</span>
+      </div>
+    {% endfor %}
+  </div>
+
+  {# ── Actions ── #}
+  <div class="action-row">
+    <a href="/categories" class="btn-accent">Try another category</a>
+    <a href="/dashboard"  class="btn-outline">View dashboard</a>
+  </div>
+
+</main>
+
+<script>
+function toggleIdeal(n){
+  const el = document.getElementById('ideal-'+n);
+  if(el) el.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>

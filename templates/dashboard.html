@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard – InterviewAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0f0f13;--surface:#18181f;--surface2:#21212b;--border:rgba(255,255,255,0.08);--accent:#7c6ff7;--accent-light:#a99ff9;--text:#f0eff8;--text-muted:#8b8a9b;--text-faint:#56555f;--success:#4ade80;--danger:#f87171;--warn:#fbbf24;--radius:14px;--radius-sm:8px}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex}
+  .sidebar{width:220px;min-height:100vh;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:1.25rem 0;position:sticky;top:0;height:100vh}
+  .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 1.25rem;margin-bottom:2rem;text-decoration:none}
+  .brand-icon{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .brand-icon svg{width:16px;height:16px;fill:#fff}
+  .brand-name{font-size:15px;font-weight:600;color:var(--text)}
+  .sidebar-section{font-size:10px;font-weight:500;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-faint);padding:0 1.25rem;margin-bottom:6px}
+  .sidebar-link{display:flex;align-items:center;gap:10px;padding:8px 1.25rem;font-size:13px;color:var(--text-muted);text-decoration:none;border-left:2px solid transparent;transition:background 0.15s,color 0.15s}
+  .sidebar-link:hover{background:var(--surface2);color:var(--text)}
+  .sidebar-link.active{color:var(--accent-light);border-left-color:var(--accent);background:rgba(124,111,247,0.08)}
+  .sidebar-link .icon{font-size:15px}
+  .sidebar-bottom{margin-top:auto;padding:1rem 1.25rem;border-top:1px solid var(--border)}
+  .user-row{display:flex;align-items:center;gap:10px}
+  .user-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0}
+  .user-name{font-size:13px;font-weight:500}
+  .user-email{font-size:11px;color:var(--text-faint)}
+  .main{flex:1;overflow-y:auto}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:56px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:5}
+  .topbar h1{font-size:16px;font-weight:500}
+  .btn-accent{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:8px 16px;font-size:13px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;text-decoration:none;transition:background 0.2s}
+  .btn-accent:hover{background:#6a5ef0}
+  .content{padding:2rem}
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:2rem}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem}
+  .stat-icon{font-size:20px;margin-bottom:10px}
+  .stat-val{font-size:28px;font-weight:600;letter-spacing:-0.5px;margin-bottom:2px}
+  .stat-label{font-size:12px;color:var(--text-muted)}
+  .stat-note{font-size:11px;margin-top:6px;color:var(--text-faint)}
+  .charts-row{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:2rem}
+  @media(max-width:720px){.charts-row{grid-template-columns:1fr}}
+  .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+  .chart-card h2{font-size:14px;font-weight:500;margin-bottom:1.25rem}
+  .cat-bar{margin-bottom:12px}
+  .cat-bar-header{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+  .cat-bar-name{color:var(--text-muted)}
+  .cat-bar-val{font-weight:500}
+  .cat-bar-track{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
+  .cat-bar-fill{height:100%;border-radius:3px}
+  .history-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+  .history-card h2{font-size:14px;font-weight:500;margin-bottom:1.25rem}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:11px;font-weight:500;color:var(--text-faint);letter-spacing:0.4px;text-transform:uppercase;padding-bottom:10px;border-bottom:1px solid var(--border)}
+  td{padding:11px 0;border-bottom:1px solid var(--border);color:var(--text-muted);vertical-align:middle}
+  tr:last-child td{border:none}
+  td:first-child{color:var(--text);font-weight:500;text-transform:capitalize}
+  .pill{font-size:11px;padding:3px 9px;border-radius:99px;font-weight:500}
+  .pill-green{background:rgba(74,222,128,0.1);color:var(--success)}
+  .pill-purple{background:rgba(124,111,247,0.12);color:var(--accent-light)}
+  .pill-amber{background:rgba(251,191,36,0.1);color:var(--warn)}
+  .pill-red{background:rgba(248,113,113,0.1);color:var(--danger)}
+  .empty-state{text-align:center;padding:3rem;color:var(--text-faint);font-size:14px}
+  .empty-state a{color:var(--accent-light);text-decoration:none}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <a href="/dashboard" class="sidebar-brand">
+    <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
+    <span class="brand-name">InterviewAI</span>
+  </a>
+  <p class="sidebar-section">Menu</p>
+  <a href="/dashboard"   class="sidebar-link active"><span class="icon"></span> Dashboard</a>
+  <a href="/categories"  class="sidebar-link"><span class="icon"></span> Practice</a>
+  <a href="/logout"      class="sidebar-link"><span class="icon"></span> Log out</a>
+  <div class="sidebar-bottom">
+    <div class="user-row">
+      <div class="user-avatar">{{ current_user.initial }}</div>
+      <div>
+        <p class="user-name">{{ current_user.name }}</p>
+        <p class="user-email">{{ current_user.email }}</p>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <h1>Dashboard</h1>
+    <a href="/categories" class="btn-accent">+ New interview</a>
+  </div>
+
+  <div class="content">
+
+    {# ── Stats cards ── #}
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"></div>
+        <div class="stat-val">{{ total_interviews }}</div>
+        <div class="stat-label">Total interviews</div>
+        <div class="stat-note">All time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"></div>
+        <div class="stat-val" style="color:var(--accent-light)">{{ avg_score }}%</div>
+        <div class="stat-label">Average score</div>
+        <div class="stat-note">Across all sessions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"></div>
+        <div class="stat-val" style="color:var(--success)">{{ best_score }}%</div>
+        <div class="stat-label">Best score</div>
+        <div class="stat-note">Personal best</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"></div>
+        <div class="stat-val">{{ cat_scores | length }}</div>
+        <div class="stat-label">Categories tried</div>
+        <div class="stat-note">Out of 5</div>
+      </div>
+    </div>
+
+    {# ── Charts ── #}
+    <div class="charts-row">
+      <div class="chart-card">
+        <h2>Performance over time</h2>
+        {% if chart_labels %}
+          <canvas id="lineChart" height="140"></canvas>
+        {% else %}
+          <div class="empty-state">No sessions yet. <a href="/categories">Start practising →</a></div>
+        {% endif %}
+      </div>
+
+      <div class="chart-card">
+        <h2>Score by category</h2>
+        {% if cat_scores %}
+          {% for row in cat_scores %}
+            {% set pct = row.avg | float %}
+            {% if pct >= 80 %}{% set bar_color = '#4ade80' %}
+            {% elif pct >= 60 %}{% set bar_color = '#7c6ff7' %}
+            {% else %}{% set bar_color = '#f87171' %}
+            {% endif %}
+            <div class="cat-bar">
+              <div class="cat-bar-header">
+                <span class="cat-bar-name">{{ row.category | upper }}</span>
+                <span class="cat-bar-val" style="color:{{ bar_color }}">{{ pct }}%</span>
+              </div>
+              <div class="cat-bar-track">
+                <div class="cat-bar-fill" style="width:{{ pct }}%;background:{{ bar_color }}"></div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state" style="padding:1rem">No data yet.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    {# ── History table ── #}
+    <div class="history-card">
+      <h2>Recent interviews</h2>
+      {% if recent_sessions %}
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Score</th>
+            <th>Questions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in recent_sessions %}
+            {% set sc = s.overall_score | float %}
+            {% if sc >= 80 %}{% set pill = 'pill-green' %}
+            {% elif sc >= 60 %}{% set pill = 'pill-purple' %}
+            {% elif sc >= 40 %}{% set pill = 'pill-amber' %}
+            {% else %}{% set pill = 'pill-red' %}
+            {% endif %}
+            <tr>
+              <td>{{ s.category }} Interview</td>
+              <td>{{ s.interview_date.strftime('%b %d, %Y') }}</td>
+              <td><span class="pill {{ pill }}">{{ sc }}%</span></td>
+              <td>{{ s.total_questions }}/10</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <div class="empty-state">
+          No interviews yet. <a href="/categories">Start your first one →</a>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+  {% if chart_labels %}
+  const labels = {{ chart_labels | tojson }};
+  const scores = {{ chart_scores  | tojson }};
+
+  new Chart(document.getElementById('lineChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets:[{
+        data: scores,
+        borderColor: '#7c6ff7',
+        backgroundColor: 'rgba(124,111,247,0.07)',
+        borderWidth: 2,
+        pointRadius: 4,
+        pointBackgroundColor: '#7c6ff7',
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{min:0,max:100,grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#56555f',font:{size:11},callback:v=>v+'%'}},
+        x:{grid:{display:false},ticks:{color:'#56555f',font:{size:11}}}
+      }
+    }
+  });
+  {% endif %}
+</script>
+
+</body>
+</html>

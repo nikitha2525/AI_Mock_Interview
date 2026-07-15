@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Register – InterviewAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0f0f13;--surface:#18181f;--surface2:#21212b;--border:rgba(255,255,255,0.08);--accent:#7c6ff7;--accent-light:#a99ff9;--accent-glow:rgba(124,111,247,0.18);--text:#f0eff8;--text-muted:#8b8a9b;--text-faint:#56555f;--success:#4ade80;--danger:#f87171;--radius:12px;--radius-sm:8px}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem}
+  body::before{content:'';position:fixed;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(124,111,247,0.12) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-60%);pointer-events:none}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:2rem;text-decoration:none}
+  .brand-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center}
+  .brand-icon svg{width:20px;height:20px;fill:#fff}
+  .brand-name{font-size:18px;font-weight:600;color:var(--text)}
+  .card{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem}
+  .card-title{font-size:20px;font-weight:600;letter-spacing:-0.4px;margin-bottom:4px}
+  .card-sub{font-size:13px;color:var(--text-muted);margin-bottom:1.75rem}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .form-group{margin-bottom:1rem}
+  label{display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;letter-spacing:0.3px;text-transform:uppercase}
+  input[type=email],input[type=password],input[type=text]{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s}
+  input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+  input::placeholder{color:var(--text-faint)}
+  .strength-bar{height:3px;background:var(--surface2);border-radius:3px;margin-top:8px}
+  .strength-fill{height:100%;width:0%;border-radius:3px;transition:width 0.3s,background 0.3s}
+  .strength-label{font-size:11px;color:var(--text-faint);margin-top:4px}
+  .btn-primary{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:11px;font-size:14px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;margin-top:1.25rem;transition:background 0.2s}
+  .btn-primary:hover{background:#6a5ef0}
+  .footer-text{text-align:center;font-size:13px;color:var(--text-muted);margin-top:1.25rem}
+  .footer-text a{color:var(--accent-light);text-decoration:none;font-weight:500}
+  .alert{padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:1rem}
+  .alert-error{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--danger)}
+</style>
+</head>
+<body>
+
+<a href="/" class="brand">
+  <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
+  <span class="brand-name">InterviewAI</span>
+</a>
+
+<div class="card">
+  <h1 class="card-title">Create your account</h1>
+  <p class="card-sub">Start practising interviews today — it's free</p>
+
+  {% if error_message %}
+    <div class="alert alert-error">{{ error_message }}</div>
+  {% endif %}
+
+  <form action="/register" method="POST">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="first_name">First name</label>
+        <input type="text" id="first_name" name="first_name" placeholder="Nikitha" required/>
+      </div>
+      <div class="form-group">
+        <label for="last_name">Last name</label>
+        <input type="text" id="last_name" name="last_name" placeholder="S"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email"/>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Min 8 characters" required oninput="checkStrength(this.value)"/>
+      <div class="strength-bar"><div class="strength-fill" id="sFill"></div></div>
+      <p class="strength-label" id="sLabel">Enter a password</p>
+    </div>
+
+    <div class="form-group">
+      <label for="confirm_password">Confirm password</label>
+      <input type="password" id="confirm_password" name="confirm_password" placeholder="Repeat password" required/>
+    </div>
+
+    <button type="submit" class="btn-primary">Create account →</button>
+  </form>
+
+  <p class="footer-text">Already have an account? <a href="/login">Log in</a></p>
+</div>
+
+<script>
+function checkStrength(v){
+  let s=0;
+  if(v.length>=8)s++;if(/[A-Z]/.test(v))s++;if(/[0-9]/.test(v))s++;if(/[^A-Za-z0-9]/.test(v))s++;
+  const L=[{p:'0%',c:'#f87171',t:'Too short'},{p:'25%',c:'#f87171',t:'Weak'},{p:'50%',c:'#fb923c',t:'Fair'},{p:'75%',c:'#facc15',t:'Good'},{p:'100%',c:'#4ade80',t:'Strong'}];
+  const l=v.length===0?0:s;
+  document.getElementById('sFill').style.cssText=`width:${L[l].p};background:${L[l].c}`;
+  const el=document.getElementById('sLabel');
+  el.textContent=v.length===0?'Enter a password':L[l].t;
+  el.style.color=L[l].c;
+}
+</script>
+</body>
+</html>

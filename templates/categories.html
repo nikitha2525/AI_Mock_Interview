@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Choose Interview – InterviewAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0f0f13;--surface:#18181f;--surface2:#21212b;--border:rgba(255,255,255,0.08);--accent:#7c6ff7;--accent-light:#a99ff9;--text:#f0eff8;--text-muted:#8b8a9b;--text-faint:#56555f;--radius:14px;--radius-sm:8px}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:56px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .brand-icon{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .brand-icon svg{width:16px;height:16px;fill:#fff}
+  .brand-name{font-size:15px;font-weight:600;color:var(--text)}
+  .nav-right{display:flex;align-items:center;gap:12px}
+  .nav-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff}
+  .nav-link{font-size:13px;color:var(--text-muted);text-decoration:none;padding:6px 12px;border-radius:var(--radius-sm);transition:background 0.15s}
+  .nav-link:hover{background:var(--surface2);color:var(--text)}
+  main{max-width:860px;margin:0 auto;padding:3rem 1.5rem}
+  .page-header{margin-bottom:2.5rem}
+  .page-header h1{font-size:26px;font-weight:600;letter-spacing:-0.5px;margin-bottom:6px}
+  .page-header p{font-size:14px;color:var(--text-muted)}
+  .section-label{font-size:11px;font-weight:500;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-faint);margin-bottom:1rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+  .cat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem 1.5rem;cursor:pointer;text-decoration:none;display:block;transition:border-color 0.2s,transform 0.15s;position:relative;overflow:hidden}
+  .cat-card::before{content:'';position:absolute;inset:0;background:var(--card-glow,transparent);opacity:0;transition:opacity 0.2s;pointer-events:none}
+  .cat-card:hover{border-color:var(--card-color);transform:translateY(-2px)}
+  .cat-card:hover::before{opacity:1}
+  .cat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:22px;background:var(--card-bg)}
+  .cat-name{font-size:15px;font-weight:600;margin-bottom:4px;letter-spacing:-0.2px}
+  .cat-desc{font-size:12px;color:var(--text-muted);line-height:1.5;margin-bottom:1rem}
+  .cat-meta{display:flex;align-items:center;gap:8px}
+  .cat-pill{font-size:11px;padding:3px 9px;border-radius:99px;background:var(--card-bg);color:var(--card-color);font-weight:500}
+  .cat-arrow{margin-left:auto;color:var(--text-faint);font-size:16px;transition:transform 0.2s}
+  .cat-card:hover .cat-arrow{transform:translateX(3px);color:var(--card-color)}
+  .c-purple{--card-color:#a99ff9;--card-bg:rgba(124,111,247,0.12);--card-glow:radial-gradient(circle at top left,rgba(124,111,247,0.06),transparent 60%)}
+  .c-teal{--card-color:#34d399;--card-bg:rgba(52,211,153,0.1);--card-glow:radial-gradient(circle at top left,rgba(52,211,153,0.06),transparent 60%)}
+  .c-blue{--card-color:#60a5fa;--card-bg:rgba(96,165,250,0.1);--card-glow:radial-gradient(circle at top left,rgba(96,165,250,0.06),transparent 60%)}
+  .c-amber{--card-color:#fbbf24;--card-bg:rgba(251,191,36,0.1);--card-glow:radial-gradient(circle at top left,rgba(251,191,36,0.06),transparent 60%)}
+  .c-rose{--card-color:#fb7185;--card-bg:rgba(251,113,133,0.1);--card-glow:radial-gradient(circle at top left,rgba(251,113,133,0.06),transparent 60%)}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/dashboard" class="brand">
+    <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
+    <span class="brand-name">InterviewAI</span>
+  </a>
+  <div class="nav-right">
+    <a href="/dashboard" class="nav-link">Dashboard</a>
+    <a href="/logout" class="nav-link">Log out</a>
+    <div class="nav-avatar">{{ current_user.initial }}</div>
+  </div>
+</nav>
+
+<main>
+  <div class="page-header">
+    <h1>Choose your interview</h1>
+    <p>Welcome back, {{ current_user.name }}. What are you practising today?</p>
+  </div>
+
+  <p class="section-label">All categories</p>
+
+  <div class="grid">
+
+    <a href="/interview/start?category=hr" class="cat-card c-purple">
+      <div class="cat-icon">🤝</div>
+      <p class="cat-name">HR Interview</p>
+      <p class="cat-desc">Behavioural questions, soft skills, and situational scenarios</p>
+      <div class="cat-meta">
+        <span class="cat-pill">10 questions</span>
+        <span class="cat-pill">~15 min</span>
+        <span class="cat-arrow">→</span>
+      </div>
+    </a>
+
+    <a href="/interview/start?category=python" class="cat-card c-teal">
+      <div class="cat-icon">🐍</div>
+      <p class="cat-name">Python Interview</p>
+      <p class="cat-desc">Core language, OOP, decorators, and standard library</p>
+      <div class="cat-meta">
+        <span class="cat-pill">10 questions</span>
+        <span class="cat-pill">~20 min</span>
+        <span class="cat-arrow">→</span>
+      </div>
+    </a>
+
+    <a href="/interview/start?category=sql" class="cat-card c-blue">
+      <div class="cat-icon">🗄️</div>
+      <p class="cat-name">SQL Interview</p>
+      <p class="cat-desc">Queries, joins, aggregations, indexes, and optimisation</p>
+      <div class="cat-meta">
+        <span class="cat-pill">10 questions</span>
+        <span class="cat-pill">~20 min</span>
+        <span class="cat-arrow">→</span>
+      </div>
+    </a>
+
+    <a href="/interview/start?category=ml" class="cat-card c-amber">
+      <div class="cat-icon">🤖</div>
+      <p class="cat-name">Machine Learning</p>
+      <p class="cat-desc">Algorithms, evaluation metrics, regularisation, and tuning</p>
+      <div class="cat-meta">
+        <span class="cat-pill">10 questions</span>
+        <span class="cat-pill">~25 min</span>
+        <span class="cat-arrow">→</span>
+      </div>
+    </a>
+
+    <a href="/interview/start?category=ds" class="cat-card c-rose">
+      <div class="cat-icon">📊</div>
+      <p class="cat-name">Data Science</p>
+      <p class="cat-desc">EDA, feature engineering, statistics, and model deployment</p>
+      <div class="cat-meta">
+        <span class="cat-pill">10 questions</span>
+        <span class="cat-pill">~25 min</span>
+        <span class="cat-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+</main>
+</body>
+</html>
