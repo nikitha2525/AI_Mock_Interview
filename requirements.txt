@@ -11,3 +11,4 @@ safetensors
 huggingface-hub
 tokenizers
 requests
+kagglehub
