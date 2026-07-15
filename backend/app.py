@@ -14,6 +14,8 @@ from types import SimpleNamespace
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
+model = SentenceTransformer('all-MiniLM-L6-v2')
+model.save("models/interview_model")
 
 load_dotenv()
 
@@ -24,8 +26,6 @@ app.config["SESSION_FILE_DIR"] = os.path.join(os.getcwd(), "flask_session")
 
 Session(app)
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
-model.save("models/interview_model")
 
 nlp_model = SentenceTransformer("models/interview_model")
 
