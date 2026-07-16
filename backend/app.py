@@ -7,7 +7,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 import psycopg2
 from psycopg2.extras import RealDictCursor
-import os
 from datetime import datetime
 from functools import wraps
 from types import SimpleNamespace
