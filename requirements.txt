@@ -8,4 +8,4 @@ transformers
 sentence-transformers
 tokenizers
 requests
-kaggle
+kagglehub
