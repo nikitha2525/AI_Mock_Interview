@@ -24,14 +24,16 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_FILE_DIR"] = os.path.join(os.getcwd(), "flask_session")
 
 Session(app)
-model = SentenceTransformer('all-MiniLM-L6-v2')
-model.save("models/interview_model")
 
-nlp_model = SentenceTransformer("models/interview_model")
+
 
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-me')
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
+
+model = SentenceTransformer('all-MiniLM-L6-v2')
+nlp_model = SentenceTransformer("models/interview_model")
+model.save("models/interview_model")
 def get_db():
     if not DATABASE_URL:
         raise RuntimeError('DATABASE_URL not set in .env')
