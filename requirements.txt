@@ -1,11 +1,10 @@
 Flask
+Flask-Session
 gunicorn
+python-dotenv
+psycopg2-binary
 numpy
-pandas
 scikit-learn
-transformers
 sentence-transformers
-tokenizers
-requests
-kagglehub
 nltk
+requests
